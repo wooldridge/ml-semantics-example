@@ -1,0 +1,80 @@
+# SPARQL examples
+# Run in the MarkLogic Query Console (http://localhost:8000/qconsole/)
+
+# 1. School names
+
+SELECT ?name
+WHERE {
+  ?school <http://example.org/hasName> ?name
+}
+
+# 2. Names of schools located in Los Angeles using prefixes
+
+PREFIX : <http://example.org/>
+PREFIX city: <http://example.org/city/>
+SELECT ?name
+WHERE {
+  ?school :isIn city:los_angeles .
+  ?school :hasName ?name
+}
+
+# 3. Names of schools with human mascots
+
+PREFIX : <http://example.org/>
+PREFIX type: <http://example.org/type/>
+SELECT ?name
+WHERE {
+  ?school :hasMascot ?mascot ;
+          :hasName ?name .
+  ?mascot :isType type:human
+}
+
+# 4. Distinct school states
+
+PREFIX : <http://example.org/>
+SELECT DISTINCT ?state
+WHERE {
+  ?school :isIn ?city .
+  ?city :isIn ?state
+}
+
+# 5. Schools in California with mascots that are not animal nor human
+
+PREFIX : <http://example.org/>
+PREFIX state: <http://example.org/state/>
+PREFIX type: <http://example.org/type/>
+SELECT DISTINCT ?name ?mascot
+WHERE {
+  ?school :isIn ?city ;
+          :hasName ?name ;
+          :hasMascot ?mascot .
+  ?city :isIn state:california .
+  MINUS { ?mascot :isType type:human } .
+  MINUS { ?mascot :isType type:animal }
+}
+
+# 6. Schools ordered north to south
+
+PREFIX : <http://example.org/>
+SELECT ?name
+WHERE {
+  ?school :hasName ?name ;
+          :isIn ?city .
+  ?city :latitude ?latitude
+
+}
+ORDER BY DESC(?latitude)
+
+# 7. School and its mascot of the easternmost school
+
+PREFIX : <http://example.org/>
+SELECT ?name ?mascot
+WHERE {
+  ?school :hasName ?name ;
+          :isIn ?city ;
+          :hasMascot ?mascot .
+  ?city :longitude ?longitude
+
+}
+ORDER BY DESC(?longitude)
+LIMIT 1
