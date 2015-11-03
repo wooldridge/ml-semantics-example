@@ -65,7 +65,7 @@ WHERE {
 }
 ORDER BY DESC(?latitude)
 
-# 7. School and its mascot of the easternmost school
+# 7. School and mascot of the easternmost school
 
 PREFIX : <http://example.org/>
 SELECT ?name ?mascot
